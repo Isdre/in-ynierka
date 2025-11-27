@@ -15,7 +15,7 @@ def relu_activation(x):
 
 class ActivationFunction:
 
-    activation_functions = {
+    functions = {
         'linear': linear_activation,
         'sigmoid': sigmoid_activation,
         'tanh': tanh_activation,
@@ -23,7 +23,7 @@ class ActivationFunction:
     }
 
     def __init__(self, name):
-        if name not in self.activation_functions:
+        if name not in ActivationFunction.functions:
             raise ValueError(f"Activation function '{name}' is not defined.")
         self.name = name
-        self.function = self.activation_functions[name]
+        self.function = ActivationFunction.functions[name]

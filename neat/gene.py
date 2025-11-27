@@ -1,5 +1,6 @@
 import random
 from neat.activation import ActivationFunction
+from neat.aggregation import AggregationFunction
 
 class Gene:
     gene_id = 0
@@ -10,12 +11,14 @@ class Gene:
         return Gene.gene_id
 
 class NeuronGene:
-    def __init__(self, gene_id, bias: float, activation: ActivationFunction):
+    def __init__(self, gene_id, bias: float, activation: ActivationFunction, aggregation: AggregationFunction):
         if gene_id is None:
             gene_id = Gene.get_next_id()
         self.gene_id = gene_id
         self.bias = bias
-        self.activation = activation
+        self.activation = activation.function
+        self.aggregation = aggregation.function
+        self.response = 0.0
 
     @staticmethod
     def crossover(neuron1, neuron2):
@@ -24,8 +27,9 @@ class NeuronGene:
 
         bias = random.choice([neuron1.bias, neuron2.bias])
         activation = neuron1.activation if random.random() < 0.5 else neuron2.activation
+        aggregation = neuron1.aggregation if random.random() < 0.5 else neuron2.aggregation
 
-        return NeuronGene(neuron1.id, bias, activation)
+        return NeuronGene(neuron1.id, bias, activation, aggregation)
 
 class LinkGene:
     def __init__(self, gene_id, input_id, output_id, weight, recurrent=False, enabled=True):

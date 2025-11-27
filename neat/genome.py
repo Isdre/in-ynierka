@@ -4,7 +4,7 @@ class Genome:
         self.num_inputs = num_inputs
         self.num_outputs = num_outputs
         self.neurons = {}
-        self.links = {}
+        self.connections = {}
         
     @staticmethod
     def crossover(genome1, genome2, fitness1, fitness2):
