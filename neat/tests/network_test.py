@@ -1,11 +1,11 @@
 from neat.network import FeedForwardNetwork
 from neat.genome import Genome
-from neat.gene import NeuronGene, LinkGene
+from neat.genes import NeuronGene, LinkGene
 from neat.config import Config
 from neat.activation import ActivationFunction
 from neat.aggregation import AggregationFunction
 
-class TestNetworkCreation:
+class TestNetwork:
     def test_create_activate_one_layer(self):
         genome = Genome(1, 1, 1)
         input_neuron = NeuronGene(1, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
@@ -14,7 +14,7 @@ class TestNetworkCreation:
 
         genome.neurons[1] = input_neuron
         genome.neurons[2] = output_neuron
-        genome.connections[(1, 2)] = link
+        genome.connections[3] = link
 
         for genome_key, genome_value in genome.connections.items():
             assert genome_value.enabled is True
@@ -46,8 +46,8 @@ class TestNetworkCreation:
         genome.neurons[2] = inner_neuron
         genome.neurons[3] = output_neuron
 
-        genome.connections[(1, 2)] = link1
-        genome.connections[(2, 3)] = link2
+        genome.connections[3] = link1
+        genome.connections[4] = link2
 
         for genome_key, genome_value in genome.connections.items():
             assert genome_value.enabled is True

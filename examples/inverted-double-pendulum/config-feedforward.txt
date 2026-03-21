@@ -1,0 +1,34 @@
+# ================================
+# Konfiguracja NEAT
+# ================================
+
+# --- Topologia sieci ---
+num_inputs = 9
+num_outputs = 1
+connections = 5
+
+# --- Populacja ---
+population_size = 50
+generation = 50
+
+# -- Fitness ---
+fitness_threshold = 0.01
+
+# --- Specjacja ---
+compatibility_threshold = 0.5
+compatibility_change = 0.1
+c1 = 1.0
+c2 = 1.0
+c3 = 0.4
+
+# --- Stagnacja ---
+stagnation_limit = 15
+
+# --- Reprodukcja ---
+survival_threshold = 0.2
+crossover_prob = 0.25
+
+# --- Mutacje strukturalne ---
+add_link_prob = 0.25
+add_neuron_prob = 0.25
+# remove_link_prob = 0.01
