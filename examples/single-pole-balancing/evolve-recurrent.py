@@ -1,5 +1,8 @@
 import os
+
 import pickle
+import datetime
+import shutil
 
 import cart_pole
 import neat
@@ -56,18 +59,25 @@ def run():
 
     pop.add_reporter(stats)
 
-    #pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
-    winner = pop.run(eval_genomes, config.generation)
+    today = datetime.datetime.now()
 
-    with open('winner-reccurrent.pickle', 'wb') as f:
+    output_folder = f"results/{today.year}-{today.month:02d}-{today.day:02d}-{today.hour:02d}-{today.minute:02d}"
+
+    os.makedirs(output_folder, exist_ok=True)
+    shutil.copy(config_path, output_folder + "/config_recurrent.txt")
+
+    pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
+    winner = pop.run(pe.evaluate, config.generation)
+
+    with open(output_folder+'/winner-recurrent.pickle', 'wb') as f:
         pickle.dump(winner, f)
 
     print(winner)
 
-    visualize.plot_stats(stats, ylog=True, view=True, filename="reccurrent-fitness.svg")
-    visualize.plot_species(stats, view=True, filename="reccurrent-speciation.svg")
+    visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/recurrent-fitness.svg")
+    visualize.plot_species(stats, view=True, filename=output_folder+"/recurrent-speciation.svg")
 
-    output_path = "reccurrent-winner.svg"
+    output_path = output_folder+"/recurrent-winner.svg"
 
     neat.graphs.visualize_genome(winner, filename=output_path, show=True)
 

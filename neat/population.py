@@ -22,10 +22,11 @@ class Population:
 
         self.previous_best_fitness = None
         self.best_fitness = None
+        self.stagnation_counter = 0
 
     def end_creterion(self):
-        if self.config.fitness_threshold is not None and self.previous_best_fitness is not None:
-            return abs(self.best_fitness-self.previous_best_fitness) < self.config.fitness_threshold
+        if self.config.fitness_threshold is not None and self.best_fitness is not None:
+            return self.best_fitness > self.config.fitness_threshold
         return False
 
     def set_best_genome(self, genome):
@@ -76,6 +77,9 @@ class Population:
 
             if self.best_genome is None or best.fitness > self.best_genome.fitness:
                 self.set_best_genome(best)
+                self.config.stagnation_counter = 0
+            else:
+                self.stagnation_counter += 1
 
             if self.end_creterion():
                 self.reporters.found_solution(self.config, self.generation, best)
@@ -85,6 +89,10 @@ class Population:
             # if fv >= self.config.fitness_threshold:
             #     self.reporters.found_solution(self.config, self.generation, best)
             #     break
+
+            if self.config.stagnation_counter >= self.config.stagnation_threshold:
+                self.reporters.stagnation(self.config, self.generation, best)
+                self.reproduction
 
             self.genomes = self.reproduction.reproduce(self.species, self.config.population_size, self.innovation_tracker, self.config)
 

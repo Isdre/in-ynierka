@@ -16,12 +16,11 @@ class FeedForwardNetwork(object):
         for k, v in zip(self.input_nodes, inputs):
             self.values[k] = v
 
-        for node, act_func, agg_func, bias, response, links in self.node_evals:
+        for node, response, links in self.node_evals:
             node_inputs = []
             for i, w in links:
                 node_inputs.append(self.values[i] * w)
-            s = agg_func(node_inputs)
-            response = act_func(bias + s)
+            response = self.genome.neurons[node].calculate_response(node_inputs)
             self.values[node] = response
             self.genome.neurons[node].response = response
 
@@ -53,9 +52,7 @@ class FeedForwardNetwork(object):
 
                 ng = genome.neurons[node]
 
-                aggregation_function = ng.aggregation.function
-                activation_function = ng.activation.function
-                node_evals.append((node, activation_function, aggregation_function, ng.bias, ng.response, inputs))
+                node_evals.append((node, ng.response, inputs))
 
         return FeedForwardNetwork(genome,config.input_keys, config.output_keys, node_evals)
 
@@ -71,7 +68,7 @@ class RecurrentNetwork(object):
         for v in self.values:
             for k in inputs + outputs:
                 v[k] = 0.0
-            for node, _, _, _, _, links in self.node_evals:
+            for node, _, links in self.node_evals:
                 v[node] = 0.0
                 for i, w in links:
                     v[i] = 0.0
@@ -94,10 +91,10 @@ class RecurrentNetwork(object):
             ivalues[i] = v
             ovalues[i] = v
 
-        for node, act_func, agg_func, bias, response, links in self.node_evals:
+        for node, response, links in self.node_evals:
             node_inputs = [ivalues[i] * w for i, w in links]
-            s = agg_func(node_inputs)
-            ovalues[node] = act_func(bias + s)
+            response = self.genome.neurons[node].calculate_response(node_inputs)
+            ovalues[node] = response
             self.genome.neurons[node].response = ovalues[node]
 
         return [ovalues[i] for i in self.output_nodes]
@@ -125,8 +122,6 @@ class RecurrentNetwork(object):
         node_evals = []
         for node_key, inp in node_inputs.items():
             ng = genome.neurons[node_key]
-            activation_function = ng.activation.function
-            aggregation_function = ng.aggregation.function
-            node_evals.append((node_key, activation_function, aggregation_function, ng.bias, ng.response, inp))
+            node_evals.append((node_key, ng.response, inp))
 
         return RecurrentNetwork(genome, config.input_keys, config.output_keys, node_evals)

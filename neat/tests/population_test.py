@@ -21,6 +21,7 @@ class TestPopulation:
         config.add_link_prob = 0.05
         config.add_neuron_prob = 0.03
         config.remove_link_prob = 0.01
+        config.add_neuron_gene_prob = 1
         config.c1 = 1.0
         config.c2 = 1.0
         config.c3 = 0.4

@@ -10,7 +10,9 @@ class Config:
         self.connections = None
         self.compatibility_threshold = None
         self.compatibility_change = None
-        self.stagnation_limit = None
+        self.stagnation_counter = None
+        self.stagnation_threshold = None
+
         self.survival_threshold = None
 
         self.generation = None
@@ -24,10 +26,18 @@ class Config:
         self.c3 = None
 
         self.crossover_prob = None
+        self.mutation_prob = None
+
+        self.stagnation_crossover_prob = None
+        self.stagnation_mutation_prob = None
 
         self.add_link_prob = None
         self.add_neuron_prob = None
-        self.remove_link_prob = None
+
+        self.add_neuron_gene_prob = None
+        self.add_lstm_gene_prob = None
+        self.add_gru_gene_prob = None
+        self.add_sitgru_gene_prob = None
 
     @staticmethod
     def parse_value(value):

@@ -105,6 +105,9 @@ class TestGenome:
             pass
 
     def test_mutate_genome_add_neuron(self):
+        config = Config()
+        config.add_neuron_gene_prob = 1.0
+
         genome = Genome(1, [1], [2])
         input_neuron = NeuronGene(1, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
         output_neuron = NeuronGene(2, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
@@ -114,12 +117,15 @@ class TestGenome:
         genome.connections[(1, 2)] = link
 
         innovation_tracker = InnovationTracker(1, 1)
-        genome.mutate_add_neuron(innovation_tracker)
+        genome.mutate_add_neuron(innovation_tracker, config)
 
         assert len(genome.neurons) == 3
         assert len(genome.connections) == 3
 
     def test_mutate_add_neuron_disables_old_link(self):
+        config = Config()
+        config.add_neuron_gene_prob = 1.0
+
         genome = Genome(1, [1], [2])
         input_neuron = NeuronGene(1, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
         output_neuron = NeuronGene(2, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
@@ -129,12 +135,14 @@ class TestGenome:
         genome.connections[(1, 2)] = link
 
         innovation_tracker = InnovationTracker(1, 1)
-        genome.mutate_add_neuron(innovation_tracker)
+        genome.mutate_add_neuron(innovation_tracker, config)
 
         # Oryginalne połączenie powinno być wyłączone
         assert genome.connections[(1, 2)].enabled is False
 
     def test_mutate_genome_add_connection(self):
+        config = Config()
+
         genome = Genome(1, [1], [2])
         input_neuron = NeuronGene(1, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
         output_neuron = NeuronGene(2, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
@@ -144,8 +152,8 @@ class TestGenome:
 
 
         innovation_tracker = InnovationTracker(1, 2)
-        genome.initialize_random(innovation_tracker, 1)
-        genome.mutate_add_link(innovation_tracker)
+        genome.initialize_random(innovation_tracker, 1, config)
+        genome.mutate_add_link(innovation_tracker, config)
 
     def test_mutate_remove_link(self):
         genome = Genome(1, [1], [2])
@@ -282,11 +290,13 @@ class TestGenome:
         assert distance > 0.0
 
     def test_initialize_random(self):
+        config = Config()
+
         genome = Genome(1, [1,2], [3,4])
         for i in range(1, 5):
             genome.neurons[i] = NeuronGene(i, 0.0, ActivationFunction('linear'), AggregationFunction('sum'))
 
         innovation_tracker = InnovationTracker(2, 2)
-        genome.initialize_random(innovation_tracker, initial_connections=3)
+        genome.initialize_random(innovation_tracker, initial_connections=3, config=config)
 
         assert len(genome.connections) <= 3

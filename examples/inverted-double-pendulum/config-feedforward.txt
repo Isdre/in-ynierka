@@ -5,14 +5,14 @@
 # --- Topologia sieci ---
 num_inputs = 9
 num_outputs = 1
-connections = 5
+connections = 1
 
 # --- Populacja ---
-population_size = 50
-generation = 50
+population_size = 250
+generation = 300
 
 # -- Fitness ---
-fitness_threshold = 0.01
+fitness_threshold = 0.001
 
 # --- Specjacja ---
 compatibility_threshold = 0.5
@@ -29,6 +29,6 @@ survival_threshold = 0.2
 crossover_prob = 0.25
 
 # --- Mutacje strukturalne ---
-add_link_prob = 0.25
-add_neuron_prob = 0.25
+add_link_prob = 0.3
+add_neuron_prob = 0.3
 # remove_link_prob = 0.01

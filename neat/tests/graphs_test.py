@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch
 from neat.graphs import creates_cycle, required_for_output, feed_forward_layers, visualize_genome
 from neat.genome import Genome
+from neat.config import Config
 from neat.genes import NeuronGene, LinkGene
 from neat.activation import ActivationFunction
 from neat.aggregation import AggregationFunction
@@ -181,13 +182,16 @@ class TestVisualizeGenome:
     @pytest.mark.visual
     def test_visualize_show_window(self):
         matplotlib.use('Agg')
+        config = Config()
+        config.add_neuron_gene_prob = 1.0
+
         genome = self._make_genome(num_inputs=[1,2], num_outputs=[3])
 
         tracker = InnovationTracker(2, 1)
 
-        genome.mutate_add_link(tracker)
-        genome.mutate_add_neuron(tracker)
-        genome.mutate_add_link(tracker)
+        genome.mutate_add_link(tracker, config)
+        genome.mutate_add_neuron(tracker, config)
+        genome.mutate_add_link(tracker, config)
 
         output_path = "visual_genome_test.png"
         visualize_genome(genome, filename=output_path, show=False)

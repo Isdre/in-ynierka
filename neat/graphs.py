@@ -2,7 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import networkx as nx
-
+from neat.genes import LSTMGene, GRUGene
 def creates_cycle(connections, test):
     i, o = test
     if i == o:
@@ -68,13 +68,31 @@ def visualize_genome(genome, filename=None, show=True):
 
     input_ids = genome.num_inputs
     output_ids = genome.num_outputs
+
     hidden_ids = [
         nid for nid in genome.neurons.keys()
         if nid not in input_ids and nid not in output_ids
     ]
 
-    for nid in genome.neurons:
-        G.add_node(nid)
+    for nid, gene in genome.neurons.items():
+        gene_Type = type(gene).__name__
+        # print(f"Neuron {nid}: type={gene_Type}")
+
+        if nid in input_ids:
+            color = "skyblue"
+        elif nid in output_ids:
+            color = "salmon"
+        elif gene_Type == "LSTMGene":
+            color = "mediumpurple"
+        elif gene_Type == "GRUGene":
+            color = "orange"
+        elif gene_Type == "SiTGRUGene":
+            color = "lightcoral"
+        else:
+            color = "lightgreen"
+        G.add_node(nid, color=color)
+
+
 
     edge_labels = {}
     edge_colors = []
@@ -104,12 +122,7 @@ def visualize_genome(genome, filename=None, show=True):
 
     node_colors = []
     for nid in G.nodes():
-        if nid in input_ids:
-            node_colors.append("skyblue")
-        elif nid in output_ids:
-            node_colors.append("salmon")
-        else:
-            node_colors.append("lightgreen")
+        node_colors.append(G.nodes[nid]['color'])
 
     fig, ax = plt.subplots(figsize=(12, 8))
 

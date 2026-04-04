@@ -1,4 +1,4 @@
-from neat.genes import NeuronGene, LinkGene
+from neat.genes import NeuronGene, LSTMGene, GRUGene, SiTGRUGene, LinkGene
 from neat.activation import ActivationFunction
 from neat.aggregation import AggregationFunction
 import random
@@ -12,9 +12,9 @@ class Genome:
         self.connections = {}
         self.fitness = None
 
-    def initialize_random(self, innovation_tracker, initial_connections):
+    def initialize_random(self, innovation_tracker, initial_connections, config):
         for _ in range(initial_connections):
-            self.mutate_add_link(innovation_tracker)
+            self.mutate_add_link(innovation_tracker, config)
 
     def normalize_weights(self, weight_range=(-1.0, 1.0)):
         for link in self.connections.values():
@@ -34,7 +34,7 @@ class Genome:
 
         for neuron_id in fitter.neurons.keys():
             if neuron_id in other.neurons:
-                child_neuron = NeuronGene.crossover(fitter.neurons[neuron_id], other.neurons[neuron_id])
+                child_neuron = fitter.neurons[neuron_id].crossover(other.neurons[neuron_id])
             else:
                 child_neuron = fitter.neurons[neuron_id]
             child_genome.neurons[neuron_id] = child_neuron
@@ -53,13 +53,13 @@ class Genome:
     def mutate(self, config, innovation_tracker):
         a = random.random()
         if a < config.add_link_prob:
-            self.mutate_add_link(innovation_tracker)
-        elif config.add_link_prob < a and a < config.add_link_prob + config.add_neuron_prob:
-            self.mutate_add_neuron(innovation_tracker)
+            self.mutate_add_link(innovation_tracker, config)
+        elif a < config.add_link_prob + config.add_neuron_prob:
+            self.mutate_add_neuron(innovation_tracker, config)
         # elif config.add_link_prob + config.add_neuron_prob < a and a < config.add_link_prob + config.add_neuron_prob + config.remove_link_prob:
         #     self.mutate_remove_link()
 
-    def mutate_add_link(self, innovation_tracker):
+    def mutate_add_link(self, innovation_tracker, config):
         possible_inputs = list(self.neurons.keys())
         possible_outputs = list(self.neurons.keys())
 
@@ -67,7 +67,8 @@ class Genome:
             input_id = random.choice(possible_inputs)
             output_id = random.choice(possible_outputs)
 
-            if input_id != output_id and (input_id, output_id) not in self.connections and output_id not in self.num_inputs and input_id not in self.num_outputs:
+            if (input_id != output_id and (input_id, output_id) not in self.connections
+                    and output_id not in self.num_inputs and input_id not in self.num_outputs):
                 innovation_id = innovation_tracker.get_new_link_innovation_id(input_id, output_id)
                 new_link = LinkGene(innovation_id, input_id, output_id, weight=random.uniform(-1.0, 1.0), enabled=True)
                 self.connections[innovation_id] = new_link
@@ -80,7 +81,7 @@ class Genome:
         link_to_remove = random.choice(list(self.connections.keys()))
         del self.connections[link_to_remove]
 
-    def mutate_add_neuron(self, innovation_tracker):
+    def mutate_add_neuron(self, innovation_tracker, config):
         if not self.connections:
             return
 
@@ -91,7 +92,22 @@ class Genome:
         link_to_split.enabled = False
 
         new_neuron_id = innovation_tracker.get_new_neuron_id(link_to_split.innovation_id)
-        new_neuron = NeuronGene(new_neuron_id, bias=random.uniform(-1.0, 1.0), activation=ActivationFunction('sigmoid'), aggregation=AggregationFunction('sum'))
+        new_neuron = None
+
+        neuron_chosen = random.random()
+
+        if neuron_chosen < config.add_neuron_gene_prob:
+            new_neuron = NeuronGene(new_neuron_id, bias=random.uniform(-1.0, 1.0), activation=ActivationFunction('sigmoid'), aggregation=AggregationFunction('sum'))
+        elif neuron_chosen < config.add_neuron_gene_prob + config.add_lstm_gene_prob:
+            new_neuron = LSTMGene(new_neuron_id, activation=ActivationFunction('tanh'), aggregation=AggregationFunction('sum'), hidden_size=10)
+            new_neuron.reset_parameters()
+        elif neuron_chosen < config.add_neuron_gene_prob + config.add_lstm_gene_prob + config.add_gru_gene_prob:
+            new_neuron = GRUGene(new_neuron_id, activation=ActivationFunction('tanh'), aggregation=AggregationFunction('sum'), hidden_size=10)
+            new_neuron.reset_parameters()
+        elif neuron_chosen < config.add_neuron_gene_prob + config.add_lstm_gene_prob + config.add_gru_gene_prob + config.add_sitgru_gene_prob:
+            new_neuron = SiTGRUGene(new_neuron_id, activation=ActivationFunction('tanh'), aggregation=AggregationFunction('sum'), hidden_size=10)
+            new_neuron.reset_parameters()
+
         self.neurons[new_neuron_id] = new_neuron
 
         in_to_new_id = innovation_tracker.get_new_link_innovation_id(link_to_split.input_id, new_neuron_id)

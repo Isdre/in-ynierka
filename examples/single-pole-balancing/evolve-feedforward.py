@@ -1,5 +1,8 @@
 import os
+
 import pickle
+import datetime
+import shutil
 
 import cart_pole
 import neat
@@ -59,17 +62,22 @@ def run():
     pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
     winner = pop.run(pe.evaluate, config.generation)
 
-    with open('winner-feedforward.pickle', 'wb') as f:
+    today = datetime.datetime.now()
+
+    output_folder = f"results/{today.year}-{today.month:02d}-{today.day:02d}-{today.hour:02d}-{today.minute:02d}"
+
+    os.makedirs(output_folder, exist_ok=True)
+    shutil.copy(config_path, output_folder + "/config_feedforward.txt")
+
+    with open(output_folder+'/winner-feedforward.pickle', 'wb') as f:
         pickle.dump(winner, f)
 
     print(winner)
 
-    visualize.plot_stats(stats, ylog=True, view=True, filename="feedforward-fitness.svg")
-    visualize.plot_species(stats, view=True, filename="feedforward-speciation.svg")
+    visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/feedforward-fitness.svg")
+    visualize.plot_species(stats, view=True, filename=output_folder+"/feedforward-speciation.svg")
 
-    output_path = "feedforward-winner.svg"
-
-    neat.graphs.visualize_genome(winner, filename=output_path, show=True)
+    neat.graphs.visualize_genome(winner, filename=output_folder+"/feedforward-winner.svg", show=True)
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ from neat.reproduction import Reproduction
 from neat.species import SpeciesSet
 from neat.innovation import InnovationTracker
 from neat.reporter import ReporterSet, StdOutReporter
-from neat.genes import NeuronGene, LinkGene
+from neat.genes import NeuronGene, LinkGene, LSTMGene, GRUGene
 from neat.activation import ActivationFunction
 from neat.aggregation import AggregationFunction
 from neat.parallel import ParallelEvaluator
@@ -22,6 +22,8 @@ __all__ = [
     'ReporterSet',
     'StdOutReporter',
     'NeuronGene',
+    'LSTMGene',
+    'GRUGene',
     'LinkGene',
     'ActivationFunction',
     'AggregationFunction',

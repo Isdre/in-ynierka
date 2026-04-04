@@ -159,7 +159,15 @@ def draw_net(config, genome, view=False, filename=None, node_names=None, show_di
         if n in inputs or n in outputs:
             continue
 
-        attrs = {'style': 'filled', 'fillcolor': node_colors.get(n, 'white')}
+        gene_type = type(genome.neurons[n]).__name__
+        if gene_type == 'LSTMGene':
+            default_color = 'mediumpurple'
+        elif gene_type == 'GRUGene':
+            default_color = 'orange'
+        else:
+            default_color = 'lightgreen'
+
+        attrs = {'style': 'filled', 'fillcolor': node_colors.get(n, default_color)}
         dot.node(str(n), _attributes=attrs)
 
     for cg in genome.connections.values():

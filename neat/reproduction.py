@@ -15,7 +15,7 @@ class Reproduction:
         self.genome_indexer += 1
         return self.genome_indexer
 
-    def create_new(self, pop_size, input_keys, output_keys, innovation_tracker, initial_connections=None):
+    def create_new(self, pop_size, input_keys, output_keys, innovation_tracker, initial_connections=None, config=None):
         population = {}
         for _ in range(pop_size):
             genome_id = self._next_genome_id()
@@ -42,11 +42,11 @@ class Reproduction:
             else:
                 connections = random.randint(1, len(input_keys) * len(output_keys))
 
-            genome.initialize_random(innovation_tracker, connections)
+            genome.initialize_random(innovation_tracker, connections, config)
             population[genome_id] = genome
         return population
 
-    def reproduce(self, species_set, pop_size, innovation_tracker, config):
+    def reproduce(self, species_set, pop_size, innovation_tracker, config, stagnation=False):
         all_species = list(species_set.values())
 
         if not all_species:
@@ -94,10 +94,15 @@ class Reproduction:
             new_population[elite_id] = elite
             count -= 1
 
+            crossover_prob = config.crossover_prob if not stagnation else config.stagnation_crossover_prob
+            mutation_prob = config.mutation_prob if not stagnation else config.stagnation_mutation_prob
+
             while count > 0:
                 child_id = self._next_genome_id()
 
-                if len(survivors) >= 2 and random.random() < config.crossover_prob:
+                random_value = random.random()
+
+                if len(survivors) >= 2 and random_value < crossover_prob:
                     parent1, parent2 = random.sample(survivors, 2)
                     p1_fit = parent1.fitness if parent1.fitness is not None else 0.0
                     p2_fit = parent2.fitness if parent2.fitness is not None else 0.0
@@ -107,12 +112,17 @@ class Reproduction:
 
                     child = Genome.crossover(parent1, parent2)
                     child.genome_id = child_id
-                else:
+                elif random_value < crossover_prob + mutation_prob:
                     parent = random.choice(survivors)
                     child = copy.deepcopy(parent)
                     child.genome_id = child_id
                     child.fitness = None
                     child.mutate(config, innovation_tracker)
+                else:
+                    parent = random.choice(survivors)
+                    child = copy.deepcopy(parent)
+                    child.genome_id = child_id
+                    child.fitness = None
 
                 new_population[child_id] = child
                 count -= 1

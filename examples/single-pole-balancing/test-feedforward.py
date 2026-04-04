@@ -7,15 +7,16 @@ import neat
 from cart_pole import CartPole, discrete_actuator_force
 from movie import make_movie
 
+result_path = "results/2026-04-04-22-01"
 
-with open('winner-feedforward', 'rb') as f:
+with open(result_path+"/winner-feedforward.pickle", 'rb') as f:
     c = pickle.load(f)
 
 print('Loaded genome:')
 print(c)
 
 local_dir = os.path.dirname(__file__)
-config_path = os.path.join(local_dir, 'config_feedforward.txt')
+config_path = os.path.join(local_dir, result_path + "/config_feedforward.txt")
 config = neat.Config.read_from_file(config_path)
 
 net = neat.FeedForwardNetwork.create(c, config)
@@ -56,4 +57,4 @@ print("    theta = {0:.4f}".format(sim.theta))
 print("theta_dot = {0:.4f}".format(sim.dtheta))
 print()
 print("Making movie...")
-make_movie(net, discrete_actuator_force, 15.0, "feedforward-movie.mp4")
+make_movie(net, discrete_actuator_force, 15.0, result_path+"/feedforward-movie.mp4")

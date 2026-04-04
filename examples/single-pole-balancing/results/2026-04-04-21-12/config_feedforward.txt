@@ -8,16 +8,16 @@ num_outputs = 1
 connections = 4
 
 #Neuron_Types
-add_neuron_gene_prob = 0.4
-add_lstm_gene_prob = 0.3
-add_gru_gene_prob = 0.3
+add_neuron_gene_prob = 0.0
+add_lstm_gene_prob = 1.0
+add_gru_gene_prob = 0.0
 
 #Population
-population_size = 50
-generation = 50
+population_size = 100
+generation = 100
 
 #Fitness
-fitness_threshold = 60
+fitness_threshold = 100
 
 #Speciation
 compatibility_threshold = 0.5
