@@ -97,6 +97,8 @@ class RecurrentNetwork(object):
             ovalues[node] = response
             self.genome.neurons[node].response = ovalues[node]
 
+        # print("RecurrentNetwork.activate:  outputs={}".format([ovalues[i] for i in self.output_nodes]))
+
         return [ovalues[i] for i in self.output_nodes]
 
     @staticmethod

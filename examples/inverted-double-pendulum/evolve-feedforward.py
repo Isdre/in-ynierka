@@ -1,6 +1,10 @@
 import multiprocessing
 import os
+
 import pickle
+import datetime
+import shutil
+
 
 
 import gymnasium as gym
@@ -9,8 +13,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 import visualize
 
-runs_per_net = 3
-max_steps = 1000
+runs_per_net = 10
+max_steps = 10000
 
 
 def eval_genome(genome, config):
@@ -45,7 +49,7 @@ def eval_genomes(genomes, config):
 
 def run():
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-feedforward.txt')
+    config_path = os.path.join(local_dir, 'config_feedforward.txt')
     config = neat.Config.read_from_file(config_path)
 
     inv = neat.InnovationTracker(config.num_inputs, config.num_outputs)
@@ -59,16 +63,22 @@ def run():
     pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
     winner = pop.run(pe.evaluate, config.generation)
 
-    with open('winner-feedforward.pickle', 'wb') as f:
+    today = datetime.datetime.now()
+
+    output_folder = f"results/{today.year}-{today.month:02d}-{today.day:02d}-{today.hour:02d}-{today.minute:02d}"
+
+    os.makedirs(output_folder, exist_ok=True)
+    shutil.copy(config_path, output_folder + "/config_feedforward.txt")
+
+    with open(output_folder + '/winner-feedforward.pickle', 'wb') as f:
         pickle.dump(winner, f)
 
     print(winner)
 
-    visualize.plot_stats(stats, ylog=True, view=True, filename="feedforward-fitness.svg")
-    visualize.plot_species(stats, view=True, filename="feedforward-speciation.svg")
+    visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/feedforward-fitness.svg")
+    visualize.plot_species(stats, view=True, filename=output_folder+"/feedforward-speciation.svg")
 
-    output_path = "feedforward-winner.svg"
-    neat.graphs.visualize_genome(winner, filename=output_path, show=True)
+    neat.graphs.visualize_genome(winner, filename=output_folder+"/feedforward-winner.svg", show=True)
 
 
 if __name__ == '__main__':

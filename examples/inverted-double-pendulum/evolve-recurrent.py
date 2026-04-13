@@ -1,7 +1,9 @@
 import multiprocessing
 import os
-import pickle
 
+import pickle
+import datetime
+import shutil
 
 import gymnasium as gym
 import neat
@@ -45,7 +47,7 @@ def eval_genomes(genomes, config):
 
 def run():
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-recurrent.txt')
+    config_path = os.path.join(local_dir, 'config_recurrent.txt')
     config = neat.Config.read_from_file(config_path)
 
     inv = neat.InnovationTracker(config.num_inputs, config.num_outputs)
@@ -59,15 +61,23 @@ def run():
     pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
     winner = pop.run(pe.evaluate, config.generation)
 
-    with open('winner-recurrent.pickle', 'wb') as f:
+    today = datetime.datetime.now()
+
+    output_folder = f"results/{today.year}-{today.month:02d}-{today.day:02d}-{today.hour:02d}-{today.minute:02d}"
+
+    os.makedirs(output_folder, exist_ok=True)
+    shutil.copy(config_path, output_folder + "/config_recurrent.txt")
+
+    with open(output_folder+'/winner-recurrent.pickle', 'wb') as f:
         pickle.dump(winner, f)
 
     print(winner)
 
-    visualize.plot_stats(stats, ylog=True, view=True, filename="recurrent-fitness.svg")
-    visualize.plot_species(stats, view=True, filename="recurrent-speciation.svg")
+    visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/recurrent-fitness.svg")
+    visualize.plot_species(stats, view=True, filename=output_folder+"/recurrent-speciation.svg")
 
-    output_path = "recurrent-winner.svg"
+    output_path = output_folder+"/recurrent-winner.svg"
+
     neat.graphs.visualize_genome(winner, filename=output_path, show=True)
 
 

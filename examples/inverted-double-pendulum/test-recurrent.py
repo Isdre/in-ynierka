@@ -72,9 +72,12 @@ def load_and_test(genome_path, config_path, episodes=10, render=True, camera_dis
 
 if __name__ == '__main__':
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-recurrent.txt')
 
-    genome_path = os.path.join(local_dir, 'winner-recurrent.pickle')
+    result_path = "results/2026-04-11-23-40"
+
+    config_path = os.path.join(local_dir, result_path + "/config_recurrent.txt")
+
+    genome_path = os.path.join(local_dir, result_path + '/winner-recurrent.pickle')
 
     print(f"Testing genome from: {genome_path}\n")
     load_and_test(genome_path, config_path, episodes=20, render=True, camera_distance=4.0)

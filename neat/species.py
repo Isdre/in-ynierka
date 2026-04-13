@@ -3,8 +3,10 @@ class Species:
         self.species_id = species_id
         self.representative = representative
         self.members = {}
-        self.fitness = 0.0
-        self.adjusted_fitness = 0.0
+
+        self.max_fitness_ever = 0.0
+        self.stagnation_counter = 0
+        self.age = 0
 
 
 class SpeciesSet:
@@ -17,6 +19,25 @@ class SpeciesSet:
         return self._species_indexer
 
     def speciate(self, config, genomes, generation):
+        for s in self.species.values():
+            if not s.members:
+                continue
+
+            current_best = max((g.fitness if g.fitness is not None else 0.0) for g in s.members.values())
+
+            if not hasattr(s, 'max_fitness_ever'):
+                s.max_fitness_ever = current_best
+                s.generations_without_improvement = 0
+                s.age = 0
+
+            if current_best > s.max_fitness_ever:
+                s.max_fitness_ever = current_best
+                s.stagnation_counter = 0
+            else:
+                s.stagnation_counter += 1
+
+            s.age += 1
+
         for s in self.species.values():
             s.members = {}
 
@@ -38,7 +59,9 @@ class SpeciesSet:
         self.species = {sid: s for sid, s in self.species.items() if s.members}
 
         for s in self.species.values():
-            s.representative = max(s.members.values(), key=lambda g: g.fitness if g.fitness is not None else 0.0)
+            s.representative = random.choice(list(s.members.values()))
+
+
 
     def adjust_compatibility_threshold(self, config):
         target_species = config.target_species

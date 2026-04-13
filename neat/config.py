@@ -10,7 +10,7 @@ class Config:
         self.connections = None
         self.compatibility_threshold = None
         self.compatibility_change = None
-        self.stagnation_counter = None
+        self.stagnation_limit = None
         self.stagnation_threshold = None
 
         self.survival_threshold = None

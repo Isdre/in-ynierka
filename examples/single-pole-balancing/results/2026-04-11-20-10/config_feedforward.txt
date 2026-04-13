@@ -1,0 +1,47 @@
+# ================================
+# NEAT Configuration
+# ================================
+
+#Topology
+num_inputs = 4
+num_outputs = 1
+connections = 4
+
+#Neuron_Types
+add_neuron_gene_prob = 0.0
+add_lstm_gene_prob = 0.0
+add_gru_gene_prob = 0.0
+add_sitgru_gene_prob = 1.0
+
+#Population
+population_size = 150
+generation = 26
+
+#Fitness
+fitness_threshold = 60
+
+#Speciation
+compatibility_threshold = 0.5
+compatibility_change = 0.1
+c1 = 1.0
+c2 = 1.0
+c3 = 0.4
+
+#Stagnation
+stagnation_threshold = 15
+
+#Reproduction
+survival_threshold = 0.2
+
+#Probabilities
+# Standard probabilities
+crossover_prob = 0.25
+mutation_prob = 0.5
+
+# Probabilities applied when a species is stagnating
+stagnation_crossover_prob = 0.10
+stagnation_mutation_prob = 0.90
+
+#Structural_Mutations
+add_link_prob = 0.75
+add_neuron_prob = 0.25

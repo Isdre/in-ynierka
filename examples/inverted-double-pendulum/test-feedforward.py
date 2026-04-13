@@ -55,7 +55,10 @@ def run(net, episodes=10, render=True, camera_distance=4.0):
 
 
 def load_and_test(genome_path, config_path, episodes=10, render=True, camera_distance=4.0):
+
     config = neat.Config.read_from_file(config_path)
+
+
 
     with open(genome_path, 'rb') as f:
         genome = pickle.load(f)
@@ -72,9 +75,9 @@ def load_and_test(genome_path, config_path, episodes=10, render=True, camera_dis
 
 if __name__ == '__main__':
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, 'config-feedforward.txt')
-
-    genome_path = os.path.join(local_dir, 'winner-feedforward.pickle')
+    result_path = "results/2026-04-13-11-51"
+    config_path = os.path.join(local_dir, result_path + "/config_feedforward.txt")
+    genome_path = os.path.join(local_dir, result_path + '/winner-feedforward.pickle')
 
     print(f"Testing genome from: {genome_path}\n")
     load_and_test(genome_path, config_path, episodes=20, render=True, camera_distance=4.0)

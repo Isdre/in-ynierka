@@ -2,6 +2,7 @@ from neat.genes import NeuronGene, LSTMGene, GRUGene, SiTGRUGene, LinkGene
 from neat.activation import ActivationFunction
 from neat.aggregation import AggregationFunction
 import random
+import math
 
 class Genome:
     def __init__(self, genome_id, num_inputs, num_outputs):
@@ -70,7 +71,8 @@ class Genome:
             if (input_id != output_id and (input_id, output_id) not in self.connections
                     and output_id not in self.num_inputs and input_id not in self.num_outputs):
                 innovation_id = innovation_tracker.get_new_link_innovation_id(input_id, output_id)
-                new_link = LinkGene(innovation_id, input_id, output_id, weight=random.uniform(-1.0, 1.0), enabled=True)
+                weight = random.gauss(0, math.sqrt(2))
+                new_link = LinkGene(innovation_id, input_id, output_id, weight, enabled=True)
                 self.connections[innovation_id] = new_link
                 return
 
@@ -97,7 +99,8 @@ class Genome:
         neuron_chosen = random.random()
 
         if neuron_chosen < config.add_neuron_gene_prob:
-            new_neuron = NeuronGene(new_neuron_id, bias=random.uniform(-1.0, 1.0), activation=ActivationFunction('sigmoid'), aggregation=AggregationFunction('sum'))
+            bias = random.gauss(0, math.sqrt(2))
+            new_neuron = NeuronGene(new_neuron_id, bias=bias, activation=ActivationFunction('sigmoid'), aggregation=AggregationFunction('sum'))
         elif neuron_chosen < config.add_neuron_gene_prob + config.add_lstm_gene_prob:
             new_neuron = LSTMGene(new_neuron_id, activation=ActivationFunction('tanh'), aggregation=AggregationFunction('sum'), hidden_size=10)
             new_neuron.reset_parameters()

@@ -24,6 +24,10 @@ class ReporterSet:
         for reporter in self.reporters:
             reporter.found_solution(config, generation, best)
 
+    def stagnation(self, config, generation, best_genome):
+        for reporter in self.reporters:
+            reporter.stagnation(config, generation, best_genome)
+
     def info(self, msg):
         for reporter in self.reporters:
             reporter.info(msg)
@@ -41,6 +45,9 @@ class BaseReporter:
         pass
 
     def post_evaluate(self, config, population, species, best_genome):
+        pass
+
+    def stagnation(self, config, generation, best_genome):
         pass
 
     def found_solution(self, config, generation, best):
@@ -67,6 +74,9 @@ class StdOutReporter(BaseReporter):
             for sid, s in species.items():
                 print(f"  Species {sid}: size={len(s.members)}, fitness={s.representative.fitness}")
                 print(f"    Representative genome: {s.representative.genome_id}, members: {[m.genome_id for m in s.members.values()]}")
+
+    def stagnation(self, config, generation, best_genome):
+        print(f"Stagnation detected at generation {generation} with best fitness {best_genome.fitness:.4f}")
 
     def found_solution(self, config, generation, best):
         print(f"\nSolution found at generation {generation}")

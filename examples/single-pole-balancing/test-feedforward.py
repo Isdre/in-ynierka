@@ -7,7 +7,7 @@ import neat
 from cart_pole import CartPole, discrete_actuator_force
 from movie import make_movie
 
-result_path = "results/2026-04-04-22-01"
+result_path = "results/2026-04-11-20-08"
 
 with open(result_path+"/winner-feedforward.pickle", 'rb') as f:
     c = pickle.load(f)
