@@ -25,8 +25,8 @@ class TestReproduction:
         config.output_keys = [3]
         config.population_size = 10
         config.survival_threshold = 0.2
-        config.crossover_prob = 0.75
-        config.crossover_rate = 0.75
+        config.mutation_prob = 0.75
+        config.crossover_prob = 0.25
         config.add_link_prob = 0.05
         config.add_neuron_prob = 0.03
         config.remove_link_prob = 0.01
@@ -36,7 +36,7 @@ class TestReproduction:
         config.c3 = 0.4
         config.compatibility_threshold = 3.0
         config.compatibility_change = 0.1
-        config.stagnation_limit = 15
+        config.stagnation_limit = 100
         return config
 
 

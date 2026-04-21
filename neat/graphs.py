@@ -78,6 +78,8 @@ def visualize_genome(genome, filename=None, show=True):
         gene_Type = type(gene).__name__
         # print(f"Neuron {nid}: type={gene_Type}")
 
+        color = "lightgreen"
+
         if nid in input_ids:
             color = "skyblue"
         elif nid in output_ids:
@@ -88,8 +90,7 @@ def visualize_genome(genome, filename=None, show=True):
             color = "orange"
         elif gene_Type == "SiTGRUGene":
             color = "lightcoral"
-        else:
-            color = "lightgreen"
+
         G.add_node(nid, color=color)
 
 
@@ -121,6 +122,7 @@ def visualize_genome(genome, filename=None, show=True):
         pos.update(evenly_spaced(hidden_ids, 1, max_count))
 
     node_colors = []
+
     for nid in G.nodes():
         node_colors.append(G.nodes[nid]['color'])
 
@@ -162,7 +164,7 @@ def visualize_genome(genome, filename=None, show=True):
 
     legend = [
         mpatches.Patch(color="skyblue", label="Wejście"),
-        mpatches.Patch(color="salmon", label="Wyjście"),
+        mpatches.Patch(color="skyblue", label="Wyjście"),
         mpatches.Patch(color="lightgreen", label="Ukryty"),
         mpatches.Patch(color="lightgray", label="Wyłączone połączenie"),
     ]

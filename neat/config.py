@@ -10,8 +10,9 @@ class Config:
         self.connections = None
         self.compatibility_threshold = None
         self.compatibility_change = None
+
+        self.min_species_age = 0
         self.stagnation_limit = None
-        self.stagnation_threshold = None
 
         self.survival_threshold = None
 
@@ -33,6 +34,8 @@ class Config:
 
         self.add_link_prob = None
         self.add_neuron_prob = None
+        self.weight_mutation_prob = None
+        self.weight_mutation_prob_per_gene = None
 
         self.add_neuron_gene_prob = None
         self.add_lstm_gene_prob = None

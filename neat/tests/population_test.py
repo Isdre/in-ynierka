@@ -27,6 +27,8 @@ class TestPopulation:
         config.c3 = 0.4
         config.survival_threshold = 0.2
         config.crossover_prob = 0.75
+        config.mutation_prob = 0.25
+        config.stagnation_limit = 100
         return config
 
 

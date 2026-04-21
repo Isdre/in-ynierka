@@ -57,6 +57,8 @@ class Genome:
             self.mutate_add_link(innovation_tracker, config)
         elif a < config.add_link_prob + config.add_neuron_prob:
             self.mutate_add_neuron(innovation_tracker, config)
+        elif a < config.add_link_prob + config.add_neuron_prob + config.weight_mutation_prob:
+            self.mutate_weights(config)
         # elif config.add_link_prob + config.add_neuron_prob < a and a < config.add_link_prob + config.add_neuron_prob + config.remove_link_prob:
         #     self.mutate_remove_link()
 
@@ -133,6 +135,11 @@ class Genome:
         connections_to_remove = [lid for lid in self.connections if lid[0] == neuron_to_remove_id or lid[1] == neuron_to_remove_id]
         for lid in connections_to_remove:
             del self.connections[lid]
+
+    def mutate_weights(self, config):
+        for link in self.connections.values():
+            if random.random() < config.weight_mutation_prob_per_gene:
+                link.weight = random.gauss(0, math.sqrt(2))
 
     def calculate_genetic_distance(self, other, config):
         matching_genes = 0

@@ -112,11 +112,11 @@ class TestVisualizeGenome:
                 aggregation=AggregationFunction('sum')
             )
 
-        for i in num_inputs:
+        for i in num_outputs:
             genome.neurons[i] = NeuronGene(
                 i,
                 bias=0.0,
-                activation=ActivationFunction('sigmoid'),
+                activation=ActivationFunction('linear'),
                 aggregation=AggregationFunction('sum')
             )
 

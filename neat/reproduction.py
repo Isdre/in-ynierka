@@ -47,7 +47,22 @@ class Reproduction:
         return population
 
     def reproduce(self, species_set, pop_size, innovation_tracker, config, stagnation=False):
-        all_species = list(species_set.values())
+        remaining_species = []
+
+        global_best_fitness = max(s.max_fitness_ever for s in species_set.values())
+
+        for s in species_set.values():
+            is_stagnant = s.stagnation_counter >= config.stagnation_limit
+            is_champion = s.max_fitness_ever >= global_best_fitness
+
+            if not is_stagnant or is_champion:
+                remaining_species.append(s)
+
+        if not remaining_species:
+            all_sorted = sorted(species_set.values(), key=lambda s: s.max_fitness_ever, reverse=True)
+            remaining_species = all_sorted[:2]
+
+        all_species = remaining_species
 
         if not all_species:
             raise RuntimeError("Brak gatunków do reprodukcji.")

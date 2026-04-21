@@ -72,7 +72,7 @@ class StdOutReporter(BaseReporter):
         if self.show_species_detail:
             print(f"Number of species: {len(species.keys())}")
             for sid, s in species.items():
-                print(f"  Species {sid}: size={len(s.members)}, fitness={s.representative.fitness}")
+                print(f"  Species {sid}: size={len(s.members)}, max fitness ever={s.max_fitness_ever:.4f}, age={s.age}, stagnation={s.stagnation_counter}")
                 print(f"    Representative genome: {s.representative.genome_id}, members: {[m.genome_id for m in s.members.values()]}")
 
     def stagnation(self, config, generation, best_genome):

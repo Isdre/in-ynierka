@@ -11,6 +11,7 @@ class Population:
         self.reporters = ReporterSet()
         self.reproduction = Reproduction(self.reporters)
         self.innovation_tracker = innovation_tracker
+        self.species_set = SpeciesSet()
         self.species = {}
         self.genomes = self.reproduction.create_new(
             config.population_size,
@@ -21,7 +22,7 @@ class Population:
         self.best_genome = None
 
         self.previous_best_fitness = None
-        self.best_fitness = None
+        self.best_fitness = float('-inf')
 
         self.stagnation_counter = 0
 
@@ -36,9 +37,8 @@ class Population:
         self.best_fitness = genome.fitness
 
     def speciate(self):
-        species_set = SpeciesSet()
-        species_set.speciate(self.config, self.genomes, self.generation)
-        self.species = species_set.species
+        self.species_set.speciate(self.config, self.genomes, self.generation)
+        self.species = self.species_set.species
 
     def get_best_genome(self):
         return max(self.genomes.values(), key=lambda g: g.fitness)
