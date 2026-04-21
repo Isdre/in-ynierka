@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html lang="pl" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>neat.math_util &#8212; praca_inzynierska 1.0.0 - dokumentacja</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../_static/documentation_options.js?v=4cec2c57"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=4c397337"></script>
+    <link rel="index" title="Indeks" href="../../genindex.html" />
+    <link rel="search" title="Szukaj" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Kod źródłowy modułu neat.math_util</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Commonly used functions not available in the Python2 standard library.&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">exp</span>
+
+
+<div class="viewcode-block" id="mean">
+<a class="viewcode-back" href="../../neat.html#neat.math_util.mean">[dokumentacja]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="median">
+<a class="viewcode-back" href="../../neat.html#neat.math_util.median">[dokumentacja]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">median</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="median2">
+<a class="viewcode-back" href="../../neat.html#neat.math_util.median2">[dokumentacja]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">median2</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">n</span><span class="o">//</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">/</span><span class="mf">2.0</span></div>
+
+
+<div class="viewcode-block" id="variance">
+<a class="viewcode-back" href="../../neat.html#neat.math_util.variance">[dokumentacja]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">variance</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">v</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="stdev">
+<a class="viewcode-back" href="../../neat.html#neat.math_util.stdev">[dokumentacja]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">stdev</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">(</span><span class="n">values</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="softmax">
+<a class="viewcode-back" href="../../neat.html#neat.math_util.softmax">[dokumentacja]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">softmax</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the softmax of the given value set, v_i = exp(v_i) / s,</span>
+<span class="sd">    where s = sum(exp(v_0), exp(v_1), ..).&quot;&quot;&quot;</span>
+    <span class="n">e_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">e_values</span><span class="p">)</span>
+    <span class="n">inv_s</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">s</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">ev</span> <span class="o">*</span> <span class="n">inv_s</span> <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="n">e_values</span><span class="p">]</span></div>
+
+
+
+<span class="c1"># Lookup table for commonly used {value} -&gt; value functions.</span>
+<span class="n">stat_functions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">mean</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">:</span> <span class="n">median</span><span class="p">,</span>
+                  <span class="s1">&#39;median2&#39;</span><span class="p">:</span> <span class="n">median2</span><span class="p">}</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">praca_inzynierska</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Szukaj" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Nawigacja</h3>
+<p class="caption" role="heading"><span class="caption-text">Spis Treści:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">neat</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Kod modułu</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
