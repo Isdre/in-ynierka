@@ -89,7 +89,7 @@ def visualize_genome(genome, filename=None, show=True):
         elif gene_Type == "GRUGene":
             color = "orange"
         elif gene_Type == "SiTGRUGene":
-            color = "lightcoral"
+            color = "red"
 
         G.add_node(nid, color=color)
 

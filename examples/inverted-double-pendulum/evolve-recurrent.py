@@ -74,7 +74,8 @@ def run():
     print(winner)
 
     visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/recurrent-fitness.svg")
-    visualize.plot_species(stats, view=True, filename=output_folder+"/recurrent-speciation.svg")
+    visualize.plot_species(stats, view=True, filename=output_folder + "/recurrent-speciation.svg")
+    visualize.plot_species(stats, view=False, filename=output_folder+"/recurrent-speciation.svg")
 
     output_path = output_folder+"/recurrent-winner.svg"
 

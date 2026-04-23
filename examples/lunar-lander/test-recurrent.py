@@ -73,7 +73,7 @@ def load_and_test(genome_path, config_path, episodes=10, render=True, camera_dis
 if __name__ == '__main__':
     local_dir = os.path.dirname(__file__)
 
-    result_path = "results/2026-04-19-18-28"
+    result_path = "results/2026-04-24-00-29"
 
     config_path = os.path.join(local_dir, result_path + "/config_recurrent.txt")
 

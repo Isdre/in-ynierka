@@ -77,6 +77,7 @@ def run():
 
     visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/feedforward-fitness.svg")
     visualize.plot_species(stats, view=True, filename=output_folder+"/feedforward-speciation.svg")
+    visualize.plot_species(stats, view=False, filename=output_folder + "/feedforward-speciation.svg")
 
     neat.graphs.visualize_genome(winner, filename=output_folder+"/feedforward-winner.svg", show=True)
 
