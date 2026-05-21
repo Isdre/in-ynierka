@@ -8,10 +8,10 @@ num_outputs = 1
 connections = 1
 
 #Neuron_Types
-add_neuron_gene_prob = 0.4
-add_lstm_gene_prob = 0.2
-add_gru_gene_prob = 0.2
-add_sitgru_gene_prob = 0.2
+add_neuron_gene_prob = 0.7
+add_lstm_gene_prob = 0.0
+add_gru_gene_prob = 0.0
+add_sitgru_gene_prob = 0.3
 
 #Population
 population_size = 250

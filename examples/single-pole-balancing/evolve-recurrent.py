@@ -8,12 +8,12 @@ import cart_pole
 import neat
 import matplotlib
 matplotlib.use('TkAgg')
-import visualize
+from neat import visualize
 import multiprocessing
 
 runs_per_net = 5
 simulation_seconds = 60.0
-
+run_times: int = 20
 
 def eval_genome(genome, config):
     net = neat.RecurrentNetwork.create(genome, config)
@@ -45,41 +45,46 @@ def eval_genomes(genomes, config):
     for id, genome in genomes.items():
         genome.fitness = eval_genome(genome, config)
 
-
 def run():
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config_recurrent.txt')
-    config = neat.Config.read_from_file(config_path)
-
-    inv = neat.InnovationTracker(config.num_inputs, config.num_outputs)
-    pop = neat.Population(config, inv)
-    pop.add_reporter(neat.StdOutReporter(True))
-
-    stats = neat.StatisticsReporter()
-
-    pop.add_reporter(stats)
 
     today = datetime.datetime.now()
-
     output_folder = f"results/{today.year}-{today.month:02d}-{today.day:02d}-{today.hour:02d}-{today.minute:02d}"
-
     os.makedirs(output_folder, exist_ok=True)
-    shutil.copy(config_path, output_folder + "/config_recurrent.txt")
+    shutil.copy(config_path, os.path.join(output_folder, "config_recurrent.txt"))
 
-    pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
-    winner = pop.run(pe.evaluate, config.generation)
+    all_runs_stats = []
 
-    with open(output_folder+'/winner-recurrent.pickle', 'wb') as f:
-        pickle.dump(winner, f)
+    for run_idx in range(run_times):
+        config = neat.Config.read_from_file(config_path)
 
-    print(winner)
+        print(f"\n{'=' * 20} RUN {run_idx + 1}/{run_times} {'=' * 20}\n")
 
-    visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/recurrent-fitness.svg")
-    visualize.plot_species(stats, view=True, filename=output_folder+"/recurrent-speciation.svg")
+        inv = neat.InnovationTracker(config.num_inputs, config.num_outputs)
+        pop = neat.Population(config, inv)
 
-    output_path = output_folder+"/recurrent-winner.svg"
+        pop.add_reporter(neat.StdOutReporter(True))
 
-    neat.graphs.visualize_genome(winner, filename=output_path, show=True)
+        stats = neat.StatisticsReporter()
+        pop.add_reporter(stats)
+
+        pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
+        winner = pop.run(pe.evaluate, config.generation)
+
+        with open(os.path.join(output_folder, f'winner-recurrent-run{run_idx}.pickle'), 'wb') as f:
+            pickle.dump(winner, f)
+
+        visualize.plot_stats(stats, ylog=True, view=False, filename=output_folder + f'/recurrent-run{run_idx}-fitness.svg')
+        visualize.plot_species(stats, view=False, filename=output_folder + f'/recurrent-run{run_idx}-speciation.svg')
+        all_runs_stats.append(stats)
+
+    print("\nTworzenie zbiorczych wykresów...")
+    visualize.plot_aggregated_stats(
+        all_runs_stats,
+        view=False,
+        filename=os.path.join(output_folder, "aggregated-fitness.svg")
+    )
 
 
 if __name__ == '__main__':

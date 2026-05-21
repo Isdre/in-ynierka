@@ -11,11 +11,11 @@ import gymnasium as gym
 import neat
 import matplotlib
 matplotlib.use('TkAgg')
-import visualize
+from neat import visualize
 
 runs_per_net = 10
 max_steps = 10000
-
+run_times: int = 20
 
 def eval_genome(genome, config):
     net = neat.FeedForwardNetwork.create(genome, config)
@@ -46,41 +46,46 @@ def eval_genomes(genomes, config):
     for genome_id, genome in genomes:
         genome.fitness = eval_genome(genome, config)
 
-
 def run():
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config_feedforward.txt')
-    config = neat.Config.read_from_file(config_path)
-
-    inv = neat.InnovationTracker(config.num_inputs, config.num_outputs)
-    pop = neat.Population(config, inv)
-    pop.add_reporter(neat.StdOutReporter(True))
-
-    stats = neat.StatisticsReporter()
-
-    pop.add_reporter(stats)
-
-    pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
-    winner = pop.run(pe.evaluate, config.generation)
 
     today = datetime.datetime.now()
-
     output_folder = f"results/{today.year}-{today.month:02d}-{today.day:02d}-{today.hour:02d}-{today.minute:02d}"
-
     os.makedirs(output_folder, exist_ok=True)
-    shutil.copy(config_path, output_folder + "/config_feedforward.txt")
+    shutil.copy(config_path, os.path.join(output_folder, "config_feedforward.txt"))
 
-    with open(output_folder + '/winner-feedforward.pickle', 'wb') as f:
-        pickle.dump(winner, f)
+    all_runs_stats = []
 
-    print(winner)
+    for run_idx in range(run_times):
+        config = neat.Config.read_from_file(config_path)
 
-    visualize.plot_stats(stats, ylog=True, view=True, filename=output_folder+"/feedforward-fitness.svg")
-    visualize.plot_species(stats, view=True, filename=output_folder+"/feedforward-speciation.svg")
-    visualize.plot_species(stats, view=False, filename=output_folder + "/feedforward-speciation.svg")
+        print(f"\n{'=' * 20} RUN {run_idx + 1}/{run_times} {'=' * 20}\n")
 
-    neat.graphs.visualize_genome(winner, filename=output_folder+"/feedforward-winner.svg", show=True)
+        inv = neat.InnovationTracker(config.num_inputs, config.num_outputs)
+        pop = neat.Population(config, inv)
 
+        pop.add_reporter(neat.StdOutReporter(True))
+
+        stats = neat.StatisticsReporter()
+        pop.add_reporter(stats)
+
+        pe = neat.ParallelEvaluator(multiprocessing.cpu_count(), eval_genome)
+        winner = pop.run(pe.evaluate, config.generation)
+
+        with open(os.path.join(output_folder, f'winner-feedforward-run{run_idx}.pickle'), 'wb') as f:
+            pickle.dump(winner, f)
+
+        visualize.plot_stats(stats, ylog=True, view=False, filename=output_folder + f'/feedforward-run{run_idx}-fitness.svg')
+        visualize.plot_species(stats, view=False, filename=output_folder + f'/feedforward-run{run_idx}-speciation.svg')
+        all_runs_stats.append(stats)
+
+    print("\nTworzenie zbiorczych wykresów...")
+    visualize.plot_aggregated_stats(
+        all_runs_stats,
+        view=False,
+        filename=os.path.join(output_folder, "aggregated-fitness.svg")
+    )
 
 if __name__ == '__main__':
     run()

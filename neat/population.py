@@ -2,10 +2,11 @@ from neat.reporter import ReporterSet
 from neat.reproduction import Reproduction
 from neat.innovation import InnovationTracker
 from neat.species import SpeciesSet
+from neat.config import Config
 from neat.math_util import mean
 
 class Population:
-    def __init__(self, config, innovation_tracker):
+    def __init__(self, config: Config, innovation_tracker: InnovationTracker):
         self.config = config
         self.generation = 0
         self.reporters = ReporterSet()
